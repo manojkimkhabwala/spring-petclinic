@@ -42,7 +42,7 @@ pipeline {
                         sh "sshpass -p '${TOMCAT_PASS}' ssh ${TOMCAT_USER}@54.162.100.141 '${remoteCommands_pre}'"
 
                         // Use sshpass to first transfer the file and then execute the remote commands
-                        sh "sshpass -p '${TOMCAT_PASS}' scp target/spring-petclinic-*.war ${TOMCAT_USER}@54.162.100.141:/opt/tomcat/webapps/"
+                        sh "sshpass -p '${TOMCAT_PASS}' scp target/spring-petclinic-*.war ${TOMCAT_USER}@54.80.24.66:/opt/tomcat/webapps/"
 
                         // Execute the post remote commands
                         sh "sshpass -p '${TOMCAT_PASS}' ssh ${TOMCAT_USER}@54.162.100.141 '${remoteCommands_post}'"                        
