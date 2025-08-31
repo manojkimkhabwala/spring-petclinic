@@ -13,10 +13,20 @@ pipeline {
                 sh 'mvn clean package'
             }
         }
-        
-        stage('Deploy') {
+
+        stage('Deploy to Tomcat') {
             steps {
-                sh 'sudo cp target/spring-petclinic.jar /var/lib/tomcat/webapps/'
+                script {
+                    withCredentials([usernamePassword(
+                        credentialsId: 'ssh',
+                        usernameVariable: 'TOMCAT_USER',    // A variable to hold the username
+                        passwordVariable: 'TOMCAT_PASS'     // A variable to hold the password
+                    )]) {
+                        // The code inside this block has access to the variables
+                        // The password will be masked in the build logs
+                        sh "sshpass -p '${TOMCAT_PASS}' scp target/spring-petclinic.war ${TOMCAT_USER}@54.162.100.141:/opt/tomcat/webapps/"
+                    }
+                }
             }
         }
     }
