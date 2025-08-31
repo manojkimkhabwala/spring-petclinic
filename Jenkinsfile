@@ -9,6 +9,9 @@ pipeline {
         }
         
         stage('Build') {
+            tools {
+                maven 'Maven 3.8.4' // Use the name you gave in Global Tool Configuration
+            }
             steps {
                 sh 'mvn clean package'
             }
