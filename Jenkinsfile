@@ -27,9 +27,9 @@ pipeline {
                     )]) {
                         
                          // The key file variable now holds the path to the key.
-                        sh "ssh -i ${KEY_FILE} -o StrictHostKeyChecking=no ${TOMCAT_USER}@54.162.100.141 'sudo systemctl stop tomcat && sudo rm -rf /opt/tomcat/webapps/spring-petclinic.war && sudo rm -rf /opt/tomcat/webapps/spring-petclinic/'"
-                        sh "scp -i ${KEY_FILE} -o StrictHostKeyChecking=no target/spring-petclinic-*.war ${TOMCAT_USER}@54.162.100.141:/opt/tomcat/webapps/"
-                        sh "ssh -i ${KEY_FILE} -o StrictHostKeyChecking=no ${TOMCAT_USER}@54.162.100.141 'sudo systemctl start tomcat'"                   
+                        sh "ssh -i ${KEY_FILE} -o StrictHostKeyChecking=no ${TOMCAT_USER}@54.80.24.66 'sudo systemctl stop tomcat && sudo rm -rf /opt/tomcat/webapps/spring-petclinic.war && sudo rm -rf /opt/tomcat/webapps/spring-petclinic/'"
+                        sh "scp -i ${KEY_FILE} -o StrictHostKeyChecking=no target/spring-petclinic-*.war ${TOMCAT_USER}@54.80.24.66:/opt/tomcat/webapps/"
+                        sh "ssh -i ${KEY_FILE} -o StrictHostKeyChecking=no ${TOMCAT_USER}@54.80.24.66 'sudo systemctl start tomcat'"                   
                     }
                 }
             }
