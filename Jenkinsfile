@@ -20,35 +20,16 @@ pipeline {
         stage('Deploy to Tomcat') {
             steps {
                 script {
-                    withCredentials([usernamePassword(
+                    withCredentials([sshUserPrivateKey(
                         credentialsId: 'ssh',
                         usernameVariable: 'TOMCAT_USER',
-                        passwordVariable: 'TOMCAT_PASS'
+                        keyFileVariable: 'KEY_FILE'
                     )]) {
-                        // Define the remote commands in a single multiline string
-                        def remoteCommands_pre = """
-                            # Stop the Tomcat service
-                            sudo systemctl stop tomcat
-                            
-                            # Remove the old application
-                            sudo rm -rf /opt/tomcat/webapps/spring-petclinic.war
-                            sudo rm -rf /opt/tomcat/webapps/spring-petclinic/
-                            
-                            # Start the Tomcat service
-                            sudo systemctl start tomcat
-                        """
-                        def remoteCommands_post = """
-                            # Start the Tomcat service
-                            sudo systemctl start tomcat
-                        """
-                        // Execute the pre remote commands
-                        sh "sshpass -p '${TOMCAT_PASS}' ssh ${TOMCAT_USER}@54.162.100.141 '${remoteCommands_pre}'"
-
-                        // Use sshpass to first transfer the file and then execute the remote commands
-                        sh "sshpass -p '${TOMCAT_PASS}' scp target/spring-petclinic-*.war ${TOMCAT_USER}@54.80.24.66:/opt/tomcat/webapps/"
-
-                        // Execute the post remote commands
-                        sh "sshpass -p '${TOMCAT_PASS}' ssh ${TOMCAT_USER}@54.162.100.141 '${remoteCommands_post}'"                        
+                        
+                         // The key file variable now holds the path to the key.
+                        sh "ssh -i ${KEY_FILE} -o StrictHostKeyChecking=no ${TOMCAT_USER}@54.162.100.141 'sudo systemctl stop tomcat && sudo rm -rf /opt/tomcat/webapps/spring-petclinic.war && sudo rm -rf /opt/tomcat/webapps/spring-petclinic/'"
+                        sh "scp -i ${KEY_FILE} -o StrictHostKeyChecking=no target/spring-petclinic-*.war ${TOMCAT_USER}@54.162.100.141:/opt/tomcat/webapps/"
+                        sh "ssh -i ${KEY_FILE} -o StrictHostKeyChecking=no ${TOMCAT_USER}@54.162.100.141 'sudo systemctl start tomcat'"                   
                     }
                 }
             }
